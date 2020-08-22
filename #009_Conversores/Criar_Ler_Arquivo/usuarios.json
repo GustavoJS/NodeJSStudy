@@ -1,0 +1,23 @@
+[
+    {
+    "nome" : "Alan",
+    "curso" : "Curso de NodeJs Intermediário",
+    "categoria" : "JavaScript",
+    "genero": ["tecnologia","linguagem de programação","desenvolvimento web", "backend"]
+    },
+    {
+
+        "nome" : "Rafael",
+        "curso" : "Introdução na linguagem a Python",
+        "categoria" : "Python",
+        "genero": ["tecnologia", "machine learning","linguagem de programação","desenvolvimento web", "backend"]
+    },    
+
+    {
+
+        "nome" : "Flavio",
+        "curso" : "Curso avançado de JAVA",
+        "categoria" : "JAVA",
+        "genero": ["tecnologia","linguagem de programação","desenvolvimento web","desenvolvimento desktop", "backend"]
+    }
+]

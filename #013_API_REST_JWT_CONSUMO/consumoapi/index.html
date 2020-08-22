@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loja de Games</title>
+
+    <link rel="stylesheet" type="text/css" href="public/semantic.min.css">
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+
+</head>
+<body>
+    <!-- <h1>Lista de Jogos</h1> -->
+
+    <div class="ui attached stackable menu">
+        <div class="ui container">
+          <a class="item">
+            <i class="home icon"></i> Home
+          </a>
+          <a class="item">
+            <i class="grid layout icon"></i> Browse
+          </a>
+          <a class="item">
+            <i class="mail icon"></i> Messages
+          </a>
+          <div class="ui simple dropdown item">
+            More
+            <i class="dropdown icon"></i>
+            <div class="menu">
+              <a class="item"><i class="edit icon"></i> Edit Profile</a>
+              <a class="item"><i class="globe icon"></i> Choose Language</a>
+              <a class="item"><i class="settings icon"></i> Account Settings</a>
+            </div>
+          </div>
+          <div class="right item">
+            <div class="ui form">
+                <div class="fields">
+                  <div class="six wide field">
+                    <!-- <label>Email</label> -->
+                    <input type="email" name= "email" placeholder="insira o email">
+                  </div>
+                  <div class="four wide field">
+                    <!-- <label>Senha</label> -->
+                    <input type="password" name="password" placeholder="*******"/>
+                  </div>
+                    <div class="six wide field">
+                         
+                        <!--<input type="text" placeholder="Last Name"> -->
+                        <button class="ui orange button" onclick="login()">Acessar</button>
+                    </div>
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
+        <!-- <div class="ui container">
+            <form  class="ui form">
+                <div class="field">
+                    <div class="two fields">
+
+                        <div class="field">
+                        <input type="email" name="email" placeholder="Insira o email" />
+                        </div>
+                        <div class="field">
+                            <input type="password" name="password" />
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div> -->
+
+
+
+      <h1 class="ui center aligned header">Lista de Jogos</h1>
+
+
+      <div class="ui container">
+            <button class="ui blue button" id="cadprod">Cadastrar produto</button>
+
+            <table class="ui celled padded table center aligned">
+                <thead>
+                    <th>Titulo</th>
+                    <th>Ano</th>
+                    <th>Plataforma</th>
+                    <th>Preço</th>
+                    <th>Ações</th>
+                </thead>
+                <tbody></tbody>
+            </table>
+      </div>
+
+      <div class="ui small modal">
+        
+        <div class="ui attached green message" id="message-success"style="display: none;">
+            <div class="header">
+              Produto cadastrado com sucesso!
+            </div>
+        </div>
+
+
+        <div class="ui attached red message" id="message-error"style="display: none;">
+            <div class="header">
+              Erro ao cadastrar o produto!
+            </div>
+        </div>
+
+        <div class="ui attached yellow message" id="message-warning"style="display: none;">
+            <div class="header"> Preencha todos os campos necessários! </div>
+        </div>
+
+        <div class="ui header">Cadastro de Jogos</div>
+
+        <div class="content">
+
+            <form class="ui form">
+                <div class="field">
+                  <input type="text" id="title" name="title" placeholder="Título">
+                </div>
+                <div class="field">
+                    <input type="text" id="year" name="year" placeholder="Ano de lançamento">
+                </div>
+
+                <div class="field">
+                  <input type="text" id="platform" name="platform" placeholder="Plataforma">
+                </div>
+
+                <div class="field">
+                    <input type="number" id="price" step='0.01' value='0.00' placeholder='Preço'/>
+                </div>
+
+
+            </form>
+
+
+        </div>
+        <div class="actions">
+          <div class="ui green button" onclick="saveItem()">Salvar</div>
+
+          <div class="ui cancel button" onclick="closeModal();">Cancelar</div>
+        </div>
+      </div>
+
+
+</body>
+    <script src="public/semantic.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <script>
+
+        function login(){
+            let email  = $('input[name=email]').val();
+            let password  = $('input[name=password]').val();
+
+            console.log({ 
+                email,
+                password 
+            });
+
+            axios.post("http://localhost:8484/auth", { 
+                email,
+                password 
+            }).then(res => {
+         
+                console.log("Login com sucesso!");
+         
+                let token = res.data.token;
+                localStorage.setItem( "token",token);
+         
+            }).catch(err => {
+         
+                console.log("Login inválido: " + err);
+            });
+        }
+
+        let axiosConfig = {
+            headers: {
+                Authorization: "Bearer " + localStorage.getItem("token"),
+            }
+        };
+
+
+
+        $("#cadprod").click(function(){
+            $('.small.modal').modal('show');
+        });
+
+        let closeModal = _ => {
+            $("#message-success").hide();
+            $("#message-error").hide();
+            $("#message-warning").hide();
+        };
+
+        axios.get("http://localhost:8484/games",axiosConfig).then(response => {
+            
+            var markup = "";
+            response.data.forEach(game => {
+
+                $("table tbody").append(`<tr>
+                    <td>${game.title}</td>
+                    <td>${game.year}</td>
+                    <td>${game.platform}</td>
+                    <td>R$${game.price}</td>
+                    <td>
+                        <button class="ui olive button" onclick=editGame(this,${game.id});>Editar</button>
+                        <button class="ui red button" onclick=deleteGame(this,${game.id});>Deletar</button>
+                    </td>
+                    <tr id="showEdit${game.id}" class="five fields" style="display:none">
+                            <td>
+                                <div class="field">
+                                    <input type="text" name="title${game.id}" placeholder="Título" value="${game.title}" />
+                                </div>
+                            </td>                                        
+                            <td>                                        
+                                <div class="field">
+                                    <input type="text" name="year${game.id}" placeholder="Ano de lançamento" value="${game.year}" />
+                                </div>
+                            </td>
+                            <td>
+                                <div class="field">
+                                    <input type="text" name="platform${game.id}" placeholder="Plataforma" value="${game.platform}" />
+                                </div>
+                            </td>           
+                            <td>           
+                                <div class="field">
+                                    <input type="number" name="price${game.id}" step="0.01"  placeholder="Preço" value="${game.price}" />
+                                </div>
+                            </td>
+                            <td>
+                                <div class="ui submit button" onclick="updateGame(${game.id})">Atualizar</div>
+                            </td>
+
+
+                    
+                    <tr>
+                        
+                        `);
+            });
+        }).catch(error => {
+        
+            console.log(error);
+        });        
+
+        saveItem = _ => {
+
+            let title = $("#title").val();
+            let year = $("#year").val();
+            let platform = $("#platform").val();
+            let price = $("#price").val();
+            
+            if(title != '' && year != '' && platform != '' && price != '')
+            {
+
+                let itemData = {
+                title : title,
+                year : year,
+                platform : platform,
+                price : price
+                }
+            
+                axios.post("http://localhost:8484/game",itemData,axiosConfig).then(success =>{
+                    
+                    if(success.status == 200)
+                    {    
+                        $("table tbody").append(`<tr>
+                                <td>${itemData.title}</td>
+                                <td>${itemData.year}</td>
+                                <td>${itemData.platform}</td>
+                                <td>R$${itemData.price}</td>
+                                <td>
+                                    <button class="ui blue button" onclick=editGame(this,${itemData.id});>Editar</button>
+                                    <button class="ui red button" data-id= "${itemData.id}" onclick=deleteGame(this,${itemData.id});>Deletar</button>
+                                </td>
+                                <tr>`);
+                                
+                                $("#title").val('');
+                                $("#year").val('');
+                                $("#platform").val('');
+                                $("#price").val('');
+
+                        $("#message-success").show();
+                    }
+                            
+
+                }).catch(error =>{
+
+                    console.log(error);
+                    $("#message-error").show();
+                });
+
+            }else{
+                $("#message-warning").show();
+            }
+
+        };
+
+
+        let editGame = (values,id) => {
+            $('#showEdit'+id).toggle(300);
+        }
+
+ 
+        let updateGame = (id) =>{
+            
+            let title = $("input[name='title"+id+"']").val();
+            let year = $("input[name='year"+id+"']").val();
+            let platform = $("input[name='platform"+id+"']").val();
+            let price = $("input[name='price"+id+"']").val();
+
+            let itemData = 
+            {
+                title:title,
+                year:year,
+                platform: platform,
+                price:price
+            }
+
+            axios.put(`http://localhost:8484/game/${id}`,itemData,axiosConfig).then(success => {
+                $('#showEdit'+id).toggle(300);
+            }).catch(error => {
+                console.log(error);
+            });
+
+        }
+
+        let deleteGame = (values,id) => {
+            
+            axios.delete(`http://localhost:8484/game/${id}`,axiosConfig).then(_ => {
+                
+                let tbodyItem = $(values).closest('tr');
+                tbodyItem.remove();
+
+            }).catch(error =>{ 
+                console.log(error);
+            });
+        }
+
+    </script>
+
+</html>

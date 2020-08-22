@@ -1,0 +1,91 @@
+<%- include('../../partials/header.ejs') %>
+<%- include('../../partials/navbar.ejs')%>
+
+<div class="container">
+    <hr>
+    <h2>Lista de Artigos</h2>
+    <hr>
+    <a class="btn btn-success" href="/admin/articles/new">Criar um novo artigo</a>
+    <hr>
+    <table class="table table-bordered">
+        <thead>
+            <tr class="text-center">
+                <th>Id</th>
+                <th>Título</th>
+                <th>Slug</th>
+                <th>Categoria</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% articles.forEach(article => { %>
+                <tr class="text-center">
+                    <td><%= article.id %></td>
+                    <td><%= article.title %></td>
+                    <td><%= article.slug %></td>
+                    <td><%= article.category.title %></td>
+
+                    <td class="btn-group ">
+
+                        <a class="btn btn-warning mr-2" href="/admin/articles/edit/<%= article.id %>">Editar</a>
+                        
+                        <form method="POST" action="/articles/delete" style="display: inline;" onSubmit="confirmDelete(event, this);">
+                            <input type="hidden" name="id" value="<%= article.id %>">
+                            <button class="btn btn-danger">Deletar</button>
+                        </form>
+                        
+                    </td>
+                </tr>                
+            <% }); %>
+        </tbody>
+    </table>
+</div>
+
+
+<div class="modal fade" id="openModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        
+        <div class="modal-header">
+
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body text-center">
+          Deseja remover este artigo ?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-dismiss="modal">Não</button>
+          <button type="button" class="btn btn-success"  >Sim</button>
+        </div>
+      </div>
+    </div>
+</div>
+
+
+<%- include('../../partials/footer.ejs')%>
+
+<script>
+    // $(document).ready(function(){
+
+        function confirmDelete(event,form){
+        
+            event.preventDefault();
+            
+
+            if(confirm("Deseja deletar este artigo ?"))
+            {
+                form.submit();
+            }
+
+        //event.submit();
+        // $("#openModal").click();
+        
+
+    }
+    // });
+
+
+
+</script>

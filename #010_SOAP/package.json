@@ -1,0 +1,15 @@
+{
+  "name": "api_soap",
+  "version": "1.0.0",
+  "description": "Teste com SOAP",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Gustavo J. Silva",
+  "license": "ISC",
+  "dependencies": {
+    "nodemon": "^2.0.4",
+    "soap": "^0.33.0"
+  }
+}

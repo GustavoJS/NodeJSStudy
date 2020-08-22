@@ -1,0 +1,46 @@
+<%- include('../../partials/header.ejs'); %>
+
+<div class="container my-5" style="width: 600px;">
+    <div class="card">
+        <div class="card-header text-center">
+            <h3>Criar nova conta</h3>
+        </div>
+        <div class="card-body">
+            <form action="/admin/users/save" method="POST" onsubmit="validaSenha(event, this);">
+                <label>E-mail</label>
+                <input type="email" name="email" class="form-control mb-3" placeholder="Insira o e-mail"  required/>
+                <!-- <hr> -->
+                <label> Insira uma senha</label>
+                <input type="password" name="password" id="password" class="form-control mb-3" placeholder="*********" required/>
+                <!-- <hr> -->
+                <label> Insira novamente a senha</label>
+                <input type="password" name="repeatpassword" id="repeatpassword" class="form-control mb-3" placeholder="*********" required/>
+                <hr>
+                <input type="submit" class="btn btn-success btn-lg btn-block" value="Cadastrar">
+            </form>
+        </div>
+    </div>
+</div>
+
+<%- include("../../partials/footer.ejs"); %>
+
+<script>
+
+    function validaSenha(e, form)
+    {
+        e.preventDefault();
+
+        let password = $("#password").val();
+        let repeatpassword = $("#repeatpassword").val();
+        
+        if(password == repeatpassword){
+            form.submit();
+        }else{
+            $("#repeatpassword").val('');
+            alert("Confirme a mesma senha digitada anteriormente");
+
+        }
+    }
+    
+
+</script>
