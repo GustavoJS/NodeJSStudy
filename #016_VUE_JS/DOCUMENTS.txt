@@ -1,0 +1,8 @@
+Comandos VUE
+
+
+vue ui ---> Uso da interface gráfica para criar e gerenciar aplicações Vue
+
+vue create nome-aplicacao ---> Cria nova aplicação
+
+npm run serve ---> Executa aplicação
